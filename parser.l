@@ -197,6 +197,11 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
 	return tknTypedef;
 }
 
+<ctxGeneral>using{TS}+ {
+	set_token_and_yyposn();
+	return tknUsing;
+}
+
 <ctxGeneral>class/{TS}+ {
 	set_token_and_yyposn();
 	return tknClass;

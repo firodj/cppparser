@@ -116,6 +116,7 @@ extern int yylex();
   CppEnumItem*          enumItem;
   CppEnumItemList*      enumItemList;
   CppTypedef*           typedefObj;
+  CppUsing*             usingObj;
   CppCompound*          cppCompundObj;
   CppTemplateArgList*   templSpec;
   CppTemplateArg*       templArg;
@@ -153,7 +154,7 @@ extern int yylex();
   CppPragma*            hashPragma;
 }
 
-%token  <str>   tknID tknStrLit tknCharLit tknNumber tknTypedef
+%token  <str>   tknID tknStrLit tknCharLit tknNumber tknTypedef tknUsing
 %token  <str>   tknLong
 %token  <str>   tknEnum
 %token  <str>   tknPreProDef
@@ -199,6 +200,7 @@ extern int yylex();
 %type  <cppVarObjList>      vardecllist vardeclliststmt
 %type  <paramList>          paramlist
 %type  <typedefObj>         typedefname typedefnamelist typedefnamestmt
+%type  <usingObj>           usingstmt;
 %type  <cppCompundObj>      stmtlist progunit classdefn classdefnstmt externcblock block
 %type  <templSpec>          templatespecifier temparglist
 %type  <templArg>           temparg tempargwodefault tempargwdefault
@@ -304,6 +306,7 @@ stmt              : vardeclstmt     { $$ = $1; }
                   | enumdefn        { $$ = $1; }
                   | enumfwddecl     { $$ = $1; }
                   | typedefnamestmt { $$ = $1; }
+                  | usingstmt       { $$ = $1; }
                   | classdefnstmt   { $$ = $1; }
                   | fwddecl         { $$ = $1; }
                   | doccomment      { $$ = $1; }
@@ -492,6 +495,11 @@ enumfwddecl       : tknEnum tknID ':' identifier ';'                            
 
 typedefnamestmt   : typedefnamelist ';' [ZZVALID;] { $$ = $1; }
                   | typedefname ';'     [ZZVALID;] { $$ = $1; }
+                  ;
+
+usingstmt         : tknUsing tknID '=' identifier ';' {
+                    $$ = new CppUsing(gCurProtLevel, $2, $4);
+                  }
                   ;
 
 typedefnamelist   : typedefname ',' tknID { $$ = $1; $$->names_.push_back((std::string) $3); }

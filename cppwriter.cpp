@@ -50,6 +50,8 @@ void CppWriter::emit(const CppObj* cppObj, std::ostream& stm, CppIndent indentat
     return emitDocComment	((CppDocComment*)	cppObj, stm, indentation);
   case CppObj::kTypedef:
     return emitTypedef		((CppTypedef*)		cppObj, stm, indentation);
+  case CppObj::kUsing:
+    return emitUsing      ((CppUsing*) cppObj, stm, indentation);
   case CppObj::kCompound:
     return emitCompound		((CppCompound*)		cppObj, stm, indentation);
   case CppObj::kFwdClsDecl:
@@ -263,6 +265,11 @@ void CppWriter::emitTypedef(const CppTypedef* typedefObj, std::ostream& stm, Cpp
     stm << ' ' << *namItr;
   }
   stm << ";\n";
+}
+
+void CppWriter::emitUsing(const CppUsing* usingObj, std::ostream& stm, CppIndent indentation /* = CppIndent()*/) const
+{
+  stm << indentation << "using " << usingObj->name_ << " = " << usingObj->type_ << ";\n";
 }
 
 void CppWriter::emitFwdDecl(const CppFwdClsDecl* fwdDeclObj, std::ostream& stm, CppIndent indentation /* = CppIndent()*/) const

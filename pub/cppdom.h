@@ -71,6 +71,7 @@ struct CppObj
     kVar,				                // A variable declaration.
     kVarList,			              // List of variables declared as comma separated identifiers.
     kTypedef,
+    kUsing,
     kEnum,
     kCompound,			            // file, namespace, class, struct, union, block.
     kFwdClsDecl,		            // Forward declaration of compound type.
@@ -334,6 +335,19 @@ struct CppTypedef : public CppVarType
 
   CppTypedef(CppObjProtLevel prot, std::string baseType, unsigned int typeAttr, unsigned short ptrLevel, CppRefType refType)
     : CppVarType(CppObj::kTypedef, prot, std::move(baseType), typeAttr, ptrLevel, refType)
+  {
+  }
+};
+
+struct CppUsing : public CppObj
+{
+  const std::string name_;
+  const std::string type_;
+
+  CppUsing(CppObjProtLevel prot, std::string name, std::string type)
+    : CppObj(CppObj::kUsing, prot)
+    , name_(std::move(name))
+    , type_(std::move(type))
   {
   }
 };
