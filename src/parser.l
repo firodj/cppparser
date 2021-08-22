@@ -902,6 +902,11 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
   RETURN(tknExternC);
 }
 
+<ctxGeneral>"extern"{WS}+"\"C++\"" {
+  set_token_and_yyposn();
+  RETURN(tknExternCpp);
+}
+
 <ctxGeneral>volatile/{TS}+ {
   set_token_and_yyposn();
   RETURN(tknVolatile);

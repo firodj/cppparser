@@ -40,6 +40,8 @@ static void emitAttribute(std::uint32_t attr, std::ostream& stm)
     stm << "extern ";
   else if (attr & kExternC)
     stm << "extern C ";
+  else if (attr & kExternCpp)
+    stm << "extern C++ ";
 
   if (attr & kConst)
     stm << "const ";
@@ -491,6 +493,8 @@ void CppWriter::emitCompound(const CppCompound* compoundObj,
     stm << '\n' << indentation++ << "{\n";
   else if (compoundObj->compoundType() == CppCompoundType::kExternCBlock)
     stm << indentation++ << "extern \"C\" {\n";
+  else if (compoundObj->compoundType() == CppCompoundType::kExternCppBlock)
+    stm << indentation++ << "extern \"C++\" {\n";
 
   CppAccessType lastAccessType = CppAccessType::kUnknown;
   forEachMember(compoundObj, [&](const CppObj* memObj) {
@@ -518,6 +522,8 @@ void CppWriter::emitCompound(const CppCompound* compoundObj,
     }
   }
   else if (compoundObj->compoundType() == CppCompoundType::kExternCBlock)
+    stm << indentation << "}\n";
+  else if (compoundObj->compoundType() == CppCompoundType::kExternCppBlock)
     stm << indentation << "}\n";
 }
 

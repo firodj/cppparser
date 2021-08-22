@@ -243,6 +243,7 @@ extern int yylex();
 %token  <str>   tknNumSignSpec // signed/unsigned
 %token  <str>   tknPublic tknProtected tknPrivate
 %token  <str>   tknExternC
+%token  <str>   tknExternCpp
 %token  <str>   tknUnRecogPrePro
 %token  <str>   tknStdHdrInclude
 %token  <str>   tknPragma tknHashError
@@ -300,7 +301,7 @@ extern int yylex();
 %type  <usingNamespaceDecl> usingnamespacedecl
 %type  <namespaceAlias>     namespacealias
 %type  <usingDecl>          usingdecl
-%type  <cppCompundObj>      stmtlist optstmtlist progunit classdefn namespacedefn classdefnstmt externcblock block
+%type  <cppCompundObj>      stmtlist optstmtlist progunit classdefn namespacedefn classdefnstmt externcblock externcppblock block
 %type  <templateParamList>  templatespecifier templateparamlist
 %type  <templateParam>      templateparam
 %type  <docCommentObj>      doccomment
@@ -464,6 +465,7 @@ stmt              : vardeclstmt         [ZZLOG;] { $$ = $1; }
                   | dtordefn            [ZZLOG;] { $$ = $1; }
                   | typeconverterstmt   [ZZLOG;] { $$ = $1; }
                   | externcblock        [ZZLOG;] { $$ = $1; }
+                  | externcppblock      [ZZLOG;] { $$ = $1; }
                   | funcptrtypedef      [ZZLOG;] { $$ = $1; }
                   | preprocessor        [ZZLOG;] { $$ = $1; }
                   | block               [ZZLOG;] { $$ = $1; }
@@ -1012,6 +1014,7 @@ typemodifier      : tknConst                              [ZZLOG;] {
 exptype           : tknStatic    [ZZLOG;] { $$ = kStatic;  }
                   | tknExtern    [ZZLOG;] { $$ = kExtern;  }
                   | tknExternC   [ZZLOG;] { $$ = kExternC; }
+                  | tknExternCpp [ZZLOG;] { $$ = kExternCpp; }
                   ;
 
 varattrib         : tknConst     [ZZLOG;] { $$ = kConst;      }
@@ -1747,6 +1750,9 @@ changeprotlevel   : tknPublic     ':'  [ZZVALID;] { $$ = CppAccessType::kPublic;
                   ;
 
 externcblock      : tknExternC block   [ZZVALID;] {$$ = $2; $$->compoundType(CppCompoundType::kExternCBlock); }
+                  ;
+
+externcppblock    : tknExternCpp block [ZZVALID;] {$$ = $2; $$->compoundType(CppCompoundType::kExternCppBlock); }
                   ;
 
 strlit            : tknStrLit          [ZZLOG;] { $$ = $1; }

@@ -90,6 +90,7 @@ enum /*class*/ CppCompoundType : std::uint8_t
   kUnion           = 0x10 | kClass,
   kBlock           = 0x20,
   kExternCBlock    = 0x40,
+  kExternCppBlock  = 0x80,
 };
 
 enum class CppAccessType : std::uint8_t
@@ -197,6 +198,7 @@ enum /*class*/ CppIdentifierAttrib : std::uint32_t
   kTrailingRet   = 0x080000,
   kMutable       = 0x100000,
   kNoExceptFalse = 0x200000,
+  kExternCpp     = 0x400000,
 };
 
 /**
