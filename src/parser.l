@@ -800,6 +800,11 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
   RETURN(tknPragma);
 }
 
+<ctxPreprocessor>line/{WS} {
+  set_token_and_yyposn();
+  RETURN(tknLine);
+}
+
 <ctxPreProBody>.*\\{WS}*{NL} {
   ++gLineNo;
 }

@@ -225,6 +225,7 @@ extern int yylex();
   CppHashIf*              hashIf;
   CppHashError*           hashError;
   CppPragma*              hashPragma;
+  CppLine*                hashLine;
 
   CppBlob*                blob;
 }
@@ -244,7 +245,7 @@ extern int yylex();
 %token  <str>   tknExternC
 %token  <str>   tknUnRecogPrePro
 %token  <str>   tknStdHdrInclude
-%token  <str>   tknPragma tknHashError
+%token  <str>   tknPragma tknHashError tknLine
 %token  <str>   tknEllipsis
 %token  <str>   tknConstCast tknStaticCast tknDynamicCast tknReinterpretCast
 %token  <str>   tknTry tknCatch tknThrow tknSizeOf
@@ -336,6 +337,7 @@ extern int yylex();
 %type  <hashIf>             hashif
 %type  <hashError>          hasherror
 %type  <hashPragma>         pragma
+%type  <hashLine>           hashline
 %type  <cppObj>             preprocessor
 
 %type  <blob>               blob
@@ -642,6 +644,10 @@ hasherror         : tknPreProHash tknHashError                  [ZZLOG;]  { $$ =
                   ;
 
 pragma            : tknPreProHash tknPragma tknPreProDef        [ZZLOG;]  { $$ = new CppPragma($3); }
+                  ;
+
+hashline          : tknPreProHash tknLine tknNumber             [ZZLOG;]  { $$ = new CppLine(std::stoi($3)                  ); }
+                  | tknPreProHash tknLine tknNumber name        [ZZLOG;]  { $$ = new CppLine(std::stoi($3), (std::string) $4); }
                   ;
 
 doccomment        : doccommentstr                               [ZZLOG;]  { $$ = new CppDocComment((std::string) $1, gCurAccessType); }

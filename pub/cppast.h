@@ -83,6 +83,21 @@ private:
   CppCompound* owner_;
 };
 
+struct CppLine : public CppObj
+{
+  static constexpr CppObjType kObjectType = CppObjType::kHashLine;
+
+  std::uint32_t     number_;
+  const std::string name_;
+
+  CppLine(std::uint32_t number, std::string name = std::string())
+    : CppObj(kObjectType, CppAccessType::kUnknown)
+    , number_(number)
+    , name_(std::move(name))
+  {
+  }
+};
+
 struct CppDefine : public CppObj
 {
   static constexpr CppObjType kObjectType = CppObjType::kHashDefine;
