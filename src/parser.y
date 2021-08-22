@@ -245,7 +245,7 @@ extern int yylex();
 %token  <str>   tknExternC
 %token  <str>   tknUnRecogPrePro
 %token  <str>   tknStdHdrInclude
-%token  <str>   tknPragma tknHashError tknLine
+%token  <str>   tknPragma tknHashError
 %token  <str>   tknEllipsis
 %token  <str>   tknConstCast tknStaticCast tknDynamicCast tknReinterpretCast
 %token  <str>   tknTry tknCatch tknThrow tknSizeOf
@@ -266,6 +266,7 @@ extern int yylex();
 %token  tknPreProHash /* When # is encountered for pre processor definition */
 %token  tknDefine tknUndef
 %token  tknInclude tknImport
+%token  tknLine
 %token  tknIf tknIfDef tknIfNDef tknElse tknElIf tknEndIf
 %token  tknFor tknWhile tknDo tknSwitch tknCase tknDefault
 %token  tknReturn
@@ -482,6 +483,7 @@ preprocessor      : define              [ZZLOG;] { $$ = $1; }
                   | include             [ZZLOG;] { $$ = $1; }
                   | import              [ZZLOG;] { $$ = $1; }
                   | hashif              [ZZLOG;] { $$ = $1; }
+                  | hashline            [ZZLOG;] { $$ = $1; }
                   | hasherror           [ZZLOG;] { $$ = $1; }
                   | pragma              [ZZLOG;] { $$ = $1; }
                   ;
@@ -647,7 +649,7 @@ pragma            : tknPreProHash tknPragma tknPreProDef        [ZZLOG;]  { $$ =
                   ;
 
 hashline          : tknPreProHash tknLine tknNumber             [ZZLOG;]  { $$ = new CppLine(std::stoi($3)                  ); }
-                  | tknPreProHash tknLine tknNumber name        [ZZLOG;]  { $$ = new CppLine(std::stoi($3), (std::string) $4); }
+                  | tknPreProHash tknLine tknNumber tknStrLit   [ZZLOG;]  { $$ = new CppLine(std::stoi($3), (std::string) $4); }
                   ;
 
 doccomment        : doccommentstr                               [ZZLOG;]  { $$ = new CppDocComment((std::string) $1, gCurAccessType); }

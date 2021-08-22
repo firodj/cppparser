@@ -290,6 +290,9 @@ CSP (({WS}*{ID}{WS}*,{WS}*)*{ID}{WS}*)*
 /* This context starts when # is encountered as first thing in line while state is ctxGeneral */
 %x ctxPreprocessor
 
+/* This context starts when line is encountered while state is ctxPreprocessor */
+%x ctxLine
+
 /* This context starts when include is encountered while state is ctxPreprocessor */
 %x ctxInclude
 
@@ -725,6 +728,13 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
   RETURN(tknUndef);
 }
 
+<ctxPreprocessor>line/{WS} {
+  ENDCONTEXT();
+  set_token_and_yyposn();
+  BEGINCONTEXT(ctxLine);
+  RETURN(tknLine);
+}
+
 <ctxPreprocessor>include/{WS} {
   ENDCONTEXT();
   set_token_and_yyposn();
@@ -749,7 +759,7 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
   RETURN(tknStdHdrInclude);
 }
 
-<ctxInclude>{NL} {
+<ctxInclude,ctxLine>{NL} {
   set_token_and_yyposn(TokenSetupFlag::ResetCommentTokenization);
   ENDCONTEXT();
   ++gLineNo;
@@ -798,11 +808,6 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
   ENDCONTEXT();
   BEGINCONTEXT(ctxPreProBody);
   RETURN(tknPragma);
-}
-
-<ctxPreprocessor>line/{WS} {
-  set_token_and_yyposn();
-  RETURN(tknLine);
 }
 
 <ctxPreProBody>.*\\{WS}*{NL} {
@@ -1127,7 +1132,7 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
   RETURN(tknArrowStar);
 }
 
-<ctxGeneral,ctxDefine>{NUM} {
+<ctxGeneral,ctxDefine,ctxLine>{NUM} {
   set_token_and_yyposn();
   RETURN(tknNumber);
 }
@@ -1137,7 +1142,7 @@ This context starts after #if, #elif, and #pragma to capture everyting till a ne
   RETURN(tknNumber);
 }
 
-<ctxGeneral,ctxInclude>{SL} {
+<ctxGeneral,ctxInclude,ctxLine>{SL} {
   set_token_and_yyposn();
   RETURN(tknStrLit);
 }
